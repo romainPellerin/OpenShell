@@ -162,6 +162,15 @@ there. Automatic mode approves such proposals, including OpenShell's own drafts
 from blocked connections, so turn it on only if you accept that binaries in the
 sandbox can gain access to public hosts without your review.
 
+The checks also compare HTTP methods, not paths. Where a binary already uses a
+provider credential at a host and port, a rule that allows a new path for a
+method the binary already uses there draws no finding. Unless OpenShell flags
+the destination, automatic mode approves the rule, and the credential applies
+to the new path. For example, a binary allowed `POST /orders/quote` can gain
+`POST /orders/approve` on the same API without your review. If routes behind a
+credential carry different authority, keep manual review for those sandboxes,
+or set `manual` on the gateway.
+
 Turn on automatic mode for every sandbox on the gateway:
 
 ```shell
@@ -197,7 +206,7 @@ rule would give a binary new access of one of these kinds:
 | `link_local_reach` | Reach a link-local address (`169.254.0.0/16` or `fe80::/10`) or a cloud metadata hostname. |
 | `l7_bypass_credentialed` | Send traffic that OpenShell cannot inspect, as `git`, `ssh`, or `nc` do, to a host where a provider credential is available. |
 | `credential_reach_expansion` | Use a provider credential at a host and port that it could not reach before. |
-| `capability_expansion` | Use a new HTTP method at a host and port where it already uses a provider credential. |
+| `capability_expansion` | Use a new HTTP method at a host and port where it already uses a provider credential. A new path for a method it already uses there is not a finding. |
 
 A proposal with any prover finding or flagged destination needs your review,
 even in automatic mode. When you reject a proposal, the agent receives the
