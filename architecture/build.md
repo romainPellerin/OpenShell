@@ -271,11 +271,16 @@ for explicit publication.
 CLI conformance runs after target provisioning and operates only through the
 configured OpenShell CLI. The archive suite defines the installed-artifact test
 boundary, while `openshell-conformance` provides reusable scenarios and a
-standalone compatibility runner. Smoke coverage separates control-plane
-create/get/list/delete behavior from exec behavior so a runtime can run the
-portable subset matching its advertised capabilities. The file-transfer
-scenario verifies portable upload and download behavior, Git-aware filtering,
-and sandbox workspace path safety.
+standalone runner with exact-leaf and family-prefix selection. The archive suite
+uses leaf Cargo tests as selection and failure-isolation boundaries, splitting
+portable contracts when control-plane, exec, lifecycle, or environment behavior
+requires different runtime capabilities. The standalone runner expands family
+selectors into the same independent leaves for manual and existing E2E
+workflows. Smoke coverage demonstrates the model by separating control-plane
+create/get/list/delete behavior from exec behavior; lifecycle coverage separates
+stop and stopped-deletion behavior from exec-dependent restart persistence. The
+file-transfer scenarios verify portable upload and download behavior, Git-aware
+filtering, and sandbox workspace path safety.
 Feature suites use the same disposable guest but may provision isolated
 dependencies after installation. The Keycloak provider-refresh suite starts a
 guest-local Keycloak realm and verifies a successful OAuth refresh followed by
