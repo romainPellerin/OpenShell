@@ -89,6 +89,10 @@ The service then implements an evaluation RPC for each operation it supports, as
 
 Most gRPC servers reject incoming messages larger than 4 MiB by default. Raise your server's limit to at least 4.5 MiB so that a maximum-size payload and the rest of the message fit.
 
+OpenShell sends HTTP/2 keepalive pings to your service every 10 seconds, including while a stream waits for traffic and while no call is active. A `WHOLE_BODY_BYTES` response stream, for example, stays quiet until the upstream finishes sending the body. By default, gRPC servers for Python, C++, and Go accept at most one such ping every 5 minutes and close the connection with `too_many_pings` after the third early ping. If your service then sends nothing for about 40 seconds, the connection closes and OpenShell applies the entry's [failure behavior](/extensibility/supervisor-middleware/configure#choose-failure-behavior) to each call in progress.
+
+Configure your server to accept a ping every 5 seconds, with or without an active call. In Python and C++, set the server arguments `grpc.http2.min_ping_interval_without_data_ms` to `5000` and `grpc.keepalive_permit_without_calls` to `1`. In Go, pass `grpc.KeepaliveEnforcementPolicy(keepalive.EnforcementPolicy{MinTime: 5 * time.Second, PermitWithoutStream: true})` to `grpc.NewServer`.
+
 These guides cover the rest of the service contract:
 
 <Cards>
