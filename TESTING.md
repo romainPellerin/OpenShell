@@ -281,8 +281,8 @@ as false passes or silently re-enter the archive.
 
 The `oci-image` feature testsuite (`tests/suites/features/oci-image`) checks
 OCI image identity and working-directory behavior shared by the Docker and
-Podman drivers against installed artifacts. CI runs it on Docker rootful
-guests:
+Podman drivers against installed artifacts. CI runs it on Docker rootful,
+Podman rootful, and Podman rootless guests:
 
 ```shell
 nix run .#tmachine -- test ubuntu-docker-rootful binaries oci-image
@@ -292,7 +292,7 @@ Run it against a local gateway by naming the command that builds images into
 the gateway's image store:
 
 ```shell
-OPENSHELL_TEST_CONTAINER_ENGINE=docker e2e/with-docker-gateway.sh \
+OPENSHELL_TEST_CONTAINER_ENGINE=podman e2e/with-podman-gateway.sh \
   cargo test --manifest-path tests/suites/features/Cargo.toml -p openshell-test-feature-oci-image -- --test-threads 1
 ```
 
